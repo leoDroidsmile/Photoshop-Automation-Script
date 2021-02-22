@@ -32,10 +32,6 @@ function applyColorOverlay(color)
 };
 
 
-function processAsset(){
-  
-}
-
 // save active document as jpeg into output location
 function saveDocument(activeDocument, filePath, fileName)
 {
@@ -48,4 +44,68 @@ function saveDocument(activeDocument, filePath, fileName)
   jpgSaveOptions.quality = 12;
   
   activeDocument.saveAs(jpgFile, jpgSaveOptions, true, Extension.LOWERCASE);  
+}
+
+
+// save active document as jpeg into output location
+function saveDocumentPNG(activeDocument, filePath, fileName)
+{
+  var fPath = filePath + '/' + fileName;
+  var opts, file;
+  opts = new ExportOptionsSaveForWeb();
+  opts.format = SaveDocumentType.PNG;
+  opts.PNG8 = false;
+  opts.quality = 100;
+  
+  var pngFile = new File(fPath);
+  app.activeDocument.exportDocument(pngFile, ExportType.SAVEFORWEB, opts);
+}
+
+
+
+function Create(width, height, outputName, logoPosition, logoPadding){
+  
+  app.open(logoFile);
+  var docRef = app.activeDocument;
+
+  // Resize document 
+  var origRuler = app.preferences.rulerUnits;
+  app.preferences.rulerUnits = Units.PIXELS;
+  docRef.resizeCanvas (width, height);
+
+  // Add Background layer
+  var layerRef = docRef.artLayers.add();
+
+  // Move new layer the old one after
+  layerRef.move(docRef.artLayers[1], ElementPlacement.PLACEAFTER);
+
+  // Fill background layer with primary color
+  var primaryColorRGB = hexToRgb(primaryColor);
+  var myColor = new SolidColor();  
+  myColor.rgb.red = primaryColorRGB.red;  
+  myColor.rgb.green = primaryColorRGB.green;  
+  myColor.rgb.blue = primaryColorRGB.blue;
+
+  docRef.selection.fill( myColor); //fills background layer with primary.
+
+
+
+  // Get logo layer size
+  var logoLayer = docRef.artLayers[0];
+  var logoWidth = logoLayer.bounds[2]-logoLayer.bounds[0]; //Grab the length
+  var logoHeight = logoLayer.bounds[3]-logoLayer.bounds[1]; //Grab the width
+
+  // Remove pixels from the length/width "200 px" => "200"
+  logoWidth = logoWidth.toString().replace(' px', '');
+  logoHeight = logoHeight.toString().replace(' px', '');
+
+  switch(logoPosition){
+    case "MiddleCenter" : break;
+    case "BottomCenter" : 
+      logoLayer.translate(0, height / 2 - logoHeight / 2 - logoPadding);
+      break;
+  }
+
+  saveDocumentPNG(docRef, outputFolder,  outputName);
+  docRef.close(SaveOptions.DONOTSAVECHANGES);
 }
