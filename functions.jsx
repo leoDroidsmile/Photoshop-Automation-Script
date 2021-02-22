@@ -32,6 +32,9 @@ function applyColorOverlay(color)
 };
 
 
+function processAsset(){
+  
+}
 
 // save active document as jpeg into output location
 function saveDocument(activeDocument, filePath, fileName)

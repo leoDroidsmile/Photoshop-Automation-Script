@@ -5,11 +5,14 @@
 // Ask user for input by showing prompt box and save inputted value to variable:
 
 var primaryColor = prompt ("Please enter primary color with HEX value ", "0000ff");
+var secondaryColor = prompt ("Please enter secondary color with HEX value ", "00ff00");
+
+// var primaryColor = "#0000ff";
+// var secondaryColor = "#00ff00";
+
 var intputPath = Folder.selectDialog("Choose folder to the icons");
 var outputPath = Folder.selectDialog("Choose folder to save files");
 
-// if(intputPath == null) 
-//   return;
 
 // Get all filenames in Input Path
 var fileList= intputPath.getFiles("*.png");
@@ -49,20 +52,44 @@ for (var index = 0; index < fileList.length; index++) {
     myColor.rgb.green = primaryColorRGB.green;  
     myColor.rgb.blue = primaryColorRGB.blue;
 
-    docRef.selection.fill( myColor); //fills background layer with white.
+    docRef.selection.fill( myColor); //fills background layer with primary.
 
 
-    // Create output folder in output location
+    // Create output folder in output path
     var outputFolder = new Folder(outputPath + "/Output");
+    var outputWhiteFolder = new Folder(outputFolder + "/White");
+    var outputSecondaryFolder = new Folder(outputFolder + "/Secondary");
+    
     if ( ! outputFolder.exists ) {
-      outputFolder.create()
+      outputFolder.create();
     }
 
-    var filename = app.activeDocument.name;
+    if(! outputWhiteFolder.exists){
+      outputWhiteFolder.create();
+    }
+
+    if(! outputSecondaryFolder.exists){
+      outputSecondaryFolder.create();
+    }
     
-    saveDocument(docRef, outputFolder,  filename.substring(0, filename.length - 4) + ".jpg");
+
+
+    // Save white foreground color on primary color background
+    var filename = app.activeDocument.name;
+    saveDocument(docRef, outputWhiteFolder,  filename.substring(0, filename.length - 4) + ".jpg");
+
+    
+    // Save secondary foreground color on primary color background
+    var secondaryColorRGB = hexToRgb(secondaryColor);
+    docRef.activeLayer = docRef.artLayers[0];
+    applyColorOverlay(
+      {
+          r: secondaryColorRGB.red,
+          g: secondaryColorRGB.green,
+          b: secondaryColorRGB.blue,
+      })
+    saveDocument(docRef, outputSecondaryFolder,  filename.substring(0, filename.length - 4) + ".jpg");
 
     docRef.close(SaveOptions.DONOTSAVECHANGES);
   }
 }
-
