@@ -59,6 +59,7 @@ for (var index = 0; index < fileList.length; index++) {
     var outputFolder = new Folder(outputPath + "/Output");
     var outputWhiteFolder = new Folder(outputFolder + "/White");
     var outputSecondaryFolder = new Folder(outputFolder + "/Secondary");
+    var outputPrimaryFolder = new Folder(outputFolder + "/Primary");
     
     if ( ! outputFolder.exists ) {
       outputFolder.create();
@@ -72,6 +73,9 @@ for (var index = 0; index < fileList.length; index++) {
       outputSecondaryFolder.create();
     }
     
+    if(! outputPrimaryFolder.exists){
+      outputPrimaryFolder.create();
+    }
 
 
     // Save white foreground color on primary color background
@@ -89,6 +93,26 @@ for (var index = 0; index < fileList.length; index++) {
           b: secondaryColorRGB.blue,
       })
     saveDocument(docRef, outputSecondaryFolder,  filename.substring(0, filename.length - 4) + ".jpg");
+
+
+    // Save primary foreground color on secondary color background
+    docRef.activeLayer = docRef.artLayers[0];
+    applyColorOverlay(
+      {
+          r: primaryColorRGB.red,
+          g: primaryColorRGB.green,
+          b: primaryColorRGB.blue,
+      });
+
+    docRef.activeLayer = docRef.artLayers[1];
+    applyColorOverlay(
+      {
+          r: secondaryColorRGB.red,
+          g: secondaryColorRGB.green,
+          b: secondaryColorRGB.blue,
+      });
+    
+    saveDocument(docRef, outputPrimaryFolder,  filename.substring(0, filename.length - 4) + ".jpg");
 
     docRef.close(SaveOptions.DONOTSAVECHANGES);
   }
