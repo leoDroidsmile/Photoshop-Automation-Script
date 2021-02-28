@@ -15,7 +15,7 @@ var outputPath = Folder.selectDialog("Choose folder to save files");
 
 
 // Get all filenames in Input Path
-var fileList= intputPath.getFiles("*.png");
+var fileList= intputPath.getFiles("*.*");
 
 // Image processing for each files
 for (var index = 0; index < fileList.length; index++) {
@@ -80,7 +80,7 @@ for (var index = 0; index < fileList.length; index++) {
 
     // Save white foreground color on primary color background
     var filename = app.activeDocument.name;
-    saveDocument(docRef, outputWhiteFolder,  filename.substring(0, filename.length - 4) + ".jpg");
+    saveDocumentPNG(docRef, outputWhiteFolder,  filename.substring(0, filename.length - 4) + ".png");
 
     
     // Save secondary foreground color on primary color background
@@ -92,7 +92,7 @@ for (var index = 0; index < fileList.length; index++) {
           g: secondaryColorRGB.green,
           b: secondaryColorRGB.blue,
       })
-    saveDocument(docRef, outputSecondaryFolder,  filename.substring(0, filename.length - 4) + ".jpg");
+    saveDocumentPNG(docRef, outputSecondaryFolder,  filename.substring(0, filename.length - 4) + ".png");
 
 
     // Save primary foreground color on secondary color background
@@ -112,7 +112,7 @@ for (var index = 0; index < fileList.length; index++) {
           b: secondaryColorRGB.blue,
       });
     
-    saveDocument(docRef, outputPrimaryFolder,  filename.substring(0, filename.length - 4) + ".jpg");
+    saveDocumentPNG(docRef, outputPrimaryFolder,  filename.substring(0, filename.length - 4) + ".png");
 
     docRef.close(SaveOptions.DONOTSAVECHANGES);
   }

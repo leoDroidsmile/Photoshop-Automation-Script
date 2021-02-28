@@ -33,7 +33,7 @@ function applyColorOverlay(color)
 
 
 // save active document as jpeg into output location
-function saveDocument(activeDocument, filePath, fileName)
+function saveDocumentJPG(activeDocument, filePath, fileName)
 {
   var fPath = filePath + '/' + fileName;
   var jpgFile = new File(fPath);
@@ -58,7 +58,7 @@ function saveDocumentPNG(activeDocument, filePath, fileName)
   opts.quality = 100;
   
   var pngFile = new File(fPath);
-  app.activeDocument.exportDocument(pngFile, ExportType.SAVEFORWEB, opts);
+  activeDocument.exportDocument(pngFile, ExportType.SAVEFORWEB, opts);
 }
 
 
@@ -141,7 +141,11 @@ function Create(width, height, outputName, logoPosition, logoPadding){
   if(logoPosition.indexOf("Bottom") != -1)
     logoLayer.translate(0, height / 2 - logoHeight / 2 - logoPadding);
 
+  
+  if(outputName.indexOf("PNG") != -1 || outputName.indexOf("png") != -1)
+    saveDocumentPNG(docRef, outputFolder,  outputName);
+  if(outputName.indexOf("JPG") != -1 || outputName.indexOf("jpg") != -1 || outputName.indexOf("jpeg") != -1)
+    saveDocumentJPG(docRef, outputFolder,  outputName);
 
-  saveDocumentPNG(docRef, outputFolder,  outputName);
   docRef.close(SaveOptions.DONOTSAVECHANGES);
 }

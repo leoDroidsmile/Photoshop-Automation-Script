@@ -24,7 +24,7 @@ if ( ! outputFolder.exists ) {
 
 
 //BOOT PORTRAITS
-Create( 1536, 2048,"MiddleCenter.png", "MiddleCenter" , 20)
+Create( 1536, 2048,"MiddleCenter.jpg", "MiddleCenter" , 20)
 Create( 1536, 2048,"MiddleLeft.png", "MiddleLeft" , 20)
 Create( 1536, 2048,"MiddleRight.png", "MiddleRight" , 20)
 Create( 1536, 2048,"TopLeft.png", "TopLeft" , 20)
