@@ -100,6 +100,20 @@ function Create(width, height, outputName, logoPosition, logoPadding){
   logoHeight = logoHeight.toString().replace(' px', '');
 
 
+  // Resize Logo for height
+  var tempHeight = height - logoPadding * 2;
+  if(logoHeight > tempHeight){
+    var changeHeight = tempHeight / logoHeight * 100;
+    var changeWidth = ( tempHeight / logoHeight * logoWidth) / logoWidth * 100;
+    logoLayer.resize(changeWidth, changeHeight, AnchorPosition.MIDDLECENTER);
+
+    // Recalculate resized logo size
+    logoWidth = logoLayer.bounds[2]-logoLayer.bounds[0]; //Grab the length
+    logoHeight = logoLayer.bounds[3]-logoLayer.bounds[1]; //Grab the width
+    logoWidth = logoWidth.toString().replace(' px', '');
+    logoHeight = logoHeight.toString().replace(' px', '');
+  }
+
   // Resize Logo for width
 
   var tempWidth = width - logoPadding * 2;
@@ -116,21 +130,7 @@ function Create(width, height, outputName, logoPosition, logoPadding){
     logoHeight = logoHeight.toString().replace(' px', '');
   }
 
-  
-  // Resize Logo for height
-  var tempHeight = height - logoPadding * 2;
-  if(logoHeight > tempHeight){
-    var changeHeight = tempHeight / logoHeight * 100;
-    var changeWidth = ( tempHeight / logoHeight * logoWidth) / logoWidth * 100;
-    logoLayer.resize(changeWidth, changeHeight, AnchorPosition.MIDDLECENTER);
-
-    // Recalculate resized logo size
-    logoWidth = logoLayer.bounds[2]-logoLayer.bounds[0]; //Grab the length
-    logoHeight = logoLayer.bounds[3]-logoLayer.bounds[1]; //Grab the width
-    logoWidth = logoWidth.toString().replace(' px', '');
-    logoHeight = logoHeight.toString().replace(' px', '');
-  }
-
+ 
   
   if(logoPosition.indexOf("Left") != -1)
     logoLayer.translate((width / 2 - logoWidth / 2 - logoPadding) * (-1), 0);
