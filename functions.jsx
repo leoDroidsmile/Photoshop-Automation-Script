@@ -92,19 +92,18 @@ function Create(width, height, outputName, logoPosition, logoPadding){
 
   // Get logo layer size
   var logoLayer = docRef.artLayers[0];
-  var logoWidth = logoLayer.bounds[2]-logoLayer.bounds[0]; //Grab the length
-  var logoHeight = logoLayer.bounds[3]-logoLayer.bounds[1]; //Grab the width
+  // var logoWidth = logoLayer.bounds[2]-logoLayer.bounds[0]; //Grab the length
+  // var logoHeight = logoLayer.bounds[3]-logoLayer.bounds[1]; //Grab the width
 
-  // Remove pixels from the length/width "200 px" => "200"
-  logoWidth = logoWidth.toString().replace(' px', '');
-  logoHeight = logoHeight.toString().replace(' px', '');
+  // // Remove pixels from the length/width "200 px" => "200"
+  // logoWidth = logoWidth.toString().replace(' px', '');
+  // logoHeight = logoHeight.toString().replace(' px', '');
 
 
   // Resize Logo for height
-  var tempHeight = height - logoPadding * 2;
-  if(logoHeight > tempHeight){
-    var changeHeight = tempHeight / logoHeight * 100;
-    var changeWidth = ( tempHeight / logoHeight * logoWidth) / logoWidth * 100;
+  if(logoHeight > height){
+    var changeHeight = height / logoHeight * 100;
+    var changeWidth = ( height / logoHeight * logoWidth) / logoWidth * 100;
     logoLayer.resize(changeWidth, changeHeight, AnchorPosition.MIDDLECENTER);
 
     // Recalculate resized logo size
@@ -115,12 +114,9 @@ function Create(width, height, outputName, logoPosition, logoPadding){
   }
 
   // Resize Logo for width
-
-  var tempWidth = width - logoPadding * 2;
-
-  if(logoWidth > tempWidth){
-    var changeWidth = tempWidth / logoWidth * 100;
-    var changeHeight = ( tempWidth / logoWidth * logoHeight) / logoHeight * 100;
+  if(logoWidth > width){
+    var changeWidth = width / logoWidth * 100;
+    var changeHeight = ( width / logoWidth * logoHeight) / logoHeight * 100;
     logoLayer.resize(changeWidth, changeHeight, AnchorPosition.MIDDLECENTER);
 
     // Recalculate resized logo size
