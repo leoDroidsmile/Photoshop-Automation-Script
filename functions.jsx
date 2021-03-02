@@ -99,22 +99,24 @@ function Create(width, height, outputName, logoPosition, logoPadding){
   logoWidth = logoWidth.toString().replace(' px', '');
   logoHeight = logoHeight.toString().replace(' px', '');
 
+  var tempWidth = width - logoPadding * 2;
+  var tempHeight = height - logoPadding * 2;
 
   // Resize Logo for height
-  if(logoWidth > width || logoHeight > height){
+  if(logoWidth > tempWidth || logoHeight > tempHeight){
 
-    var ratioWidth = logoWidth / width;
-    var ratioHeight = logoHeight / height;
+    var ratioWidth = logoWidth / tempWidth;
+    var ratioHeight = logoHeight / tempHeight;
     var changeWidth, changeHeight;
 
     if(ratioHeight > ratioWidth){
-      changeHeight = height / logoHeight * 100;
-      changeWidth = ( height / logoHeight * logoWidth) / logoWidth * 100;
+      changeHeight = tempHeight / logoHeight * 100;
+      changeWidth = ( tempHeight / logoHeight * logoWidth) / logoWidth * 100;
     }
     else{
       // Resize Logo for width
-      changeWidth = width / logoWidth * 100;
-      changeHeight = ( width / logoWidth * logoHeight) / logoHeight * 100;
+      changeWidth = tempWidth / logoWidth * 100;
+      changeHeight = ( tempWidth / logoWidth * logoHeight) / logoHeight * 100;
     }
 
     logoLayer.resize(changeWidth, changeHeight, AnchorPosition.MIDDLECENTER);
