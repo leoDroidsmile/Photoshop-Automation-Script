@@ -65,41 +65,52 @@ function saveDocumentPNG(activeDocument, filePath, fileName)
 
 function Create(width, height, outputName, logoPosition, logoPadding){
   
-  app.open(logoFile);
-  var docRef = app.activeDocument;
   var origRuler = app.preferences.rulerUnits;
   app.preferences.rulerUnits = Units.PIXELS;
-  
-  var canvasWidth = docRef.width.value;
-  var canvasHeight = docRef.height.value;
-  
-  // Move logo to center of canvas
-  var logoLayer = docRef.artLayers[0];
-  var logoPosX = logoLayer.bounds[0];
-  var logoPosY = logoLayer.bounds[1];
-  logoPosX = parseInt(logoPosX.toString().replace(' px', ''));
-  logoPosY = parseInt(logoPosY.toString().replace(' px', ''));
-  
-  // Get logo layer size
-  var logoWidth = logoLayer.bounds[2]-logoLayer.bounds[0]; 
-  var logoHeight = logoLayer.bounds[3]-logoLayer.bounds[1]; 
+  var docRef = null;
 
-  // Remove pixels from the length/width "200 px" => "200"
-  logoWidth = parseInt(logoWidth.toString().replace(' px', ''));
-  logoHeight = parseInt(logoHeight.toString().replace(' px', ''));
+  if(logoPosition.indexOf("NoLogo") != -1){
+    docRef = app.documents.add();
+  }else {
+    app.open(logoFile);
+    docRef = app.activeDocument;
+    
+    var canvasWidth = docRef.width.value;
+    var canvasHeight = docRef.height.value;
+    
+    // Move logo to center of canvas
+    var logoLayer = docRef.artLayers[0];
+    var logoPosX = logoLayer.bounds[0];
+    var logoPosY = logoLayer.bounds[1];
+    logoPosX = parseInt(logoPosX.toString().replace(' px', ''));
+    logoPosY = parseInt(logoPosY.toString().replace(' px', ''));
+    
+    // Get logo layer size
+    var logoWidth = logoLayer.bounds[2]-logoLayer.bounds[0]; 
+    var logoHeight = logoLayer.bounds[3]-logoLayer.bounds[1]; 
   
-  logoLayer.translate(Math.round(logoWidth / 2 + logoPosX - canvasWidth / 2) * (-1), Math.round(logoHeight / 2 + logoPosY - canvasHeight / 2) * (-1));
-  
+    // Remove pixels from the length/width "200 px" => "200"
+    logoWidth = parseInt(logoWidth.toString().replace(' px', ''));
+    logoHeight = parseInt(logoHeight.toString().replace(' px', ''));
+    
+    logoLayer.translate(Math.round(logoWidth / 2 + logoPosX - canvasWidth / 2) * (-1), Math.round(logoHeight / 2 + logoPosY - canvasHeight / 2) * (-1));  
+  }
 
+  
   // Resize document 
   docRef.resizeCanvas (width, height);
 
-  // Add Background layer
-  var layerRef = docRef.artLayers.add();
 
-  // Move new layer the old one after
-  layerRef.move(docRef.artLayers[1], ElementPlacement.PLACEAFTER);
+  var layerRef = null;
 
+  if(logoPosition.indexOf("NoLogo") == -1){
+    // Add Background layer
+    var layerRef = docRef.artLayers.add();
+
+    // Move new layer the old one after
+    layerRef.move(docRef.artLayers[1], ElementPlacement.PLACEAFTER);
+  }
+  
   // Fill background layer with primary color
   var primaryColorRGB = hexToRgb(primaryColor);
   var myColor = new SolidColor();  
@@ -110,48 +121,49 @@ function Create(width, height, outputName, logoPosition, logoPadding){
   docRef.selection.fill( myColor); //fills background layer with primary.
 
   
-  // 
-  var tempWidth = width - logoPadding * 2;
-  var tempHeight = height - logoPadding * 2;
-
-  // Resize Logo for height
-  if(logoWidth > tempWidth || logoHeight > tempHeight){
-
-    var ratioWidth = logoWidth / tempWidth;
-    var ratioHeight = logoHeight / tempHeight;
-    var changeWidth, changeHeight;
-
-    if(ratioHeight > ratioWidth){
-      changeHeight = tempHeight / logoHeight * 100;
-      changeWidth = ( tempHeight / logoHeight * logoWidth) / logoWidth * 100;
-    }
-    else{
-      // Resize Logo for width
-      changeWidth = tempWidth / logoWidth * 100;
-      changeHeight = ( tempWidth / logoWidth * logoHeight) / logoHeight * 100;
-    }
-
-    logoLayer.resize(changeWidth, changeHeight, AnchorPosition.MIDDLECENTER);
+  if(logoPosition.indexOf("NoLogo") == -1){
+    var tempWidth = width - logoPadding * 2;
+    var tempHeight = height - logoPadding * 2;
   
-
-    // Recalculate resized logo size
-    logoWidth = logoLayer.bounds[2]-logoLayer.bounds[0]; //Grab the length
-    logoHeight = logoLayer.bounds[3]-logoLayer.bounds[1]; //Grab the width
-    logoWidth = logoWidth.toString().replace(' px', '');
-    logoHeight = logoHeight.toString().replace(' px', '');
+    // Resize Logo for height
+    if(logoWidth > tempWidth || logoHeight > tempHeight){
+  
+      var ratioWidth = logoWidth / tempWidth;
+      var ratioHeight = logoHeight / tempHeight;
+      var changeWidth, changeHeight;
+  
+      if(ratioHeight > ratioWidth){
+        changeHeight = tempHeight / logoHeight * 100;
+        changeWidth = ( tempHeight / logoHeight * logoWidth) / logoWidth * 100;
+      }
+      else{
+        // Resize Logo for width
+        changeWidth = tempWidth / logoWidth * 100;
+        changeHeight = ( tempWidth / logoWidth * logoHeight) / logoHeight * 100;
+      }
+  
+      logoLayer.resize(changeWidth, changeHeight, AnchorPosition.MIDDLECENTER);
+    
+  
+      // Recalculate resized logo size
+      logoWidth = logoLayer.bounds[2]-logoLayer.bounds[0]; //Grab the length
+      logoHeight = logoLayer.bounds[3]-logoLayer.bounds[1]; //Grab the width
+      logoWidth = logoWidth.toString().replace(' px', '');
+      logoHeight = logoHeight.toString().replace(' px', '');
+    }
+    
+  
+    if(logoPosition.indexOf("Left") != -1)
+      logoLayer.translate(Math.round(width / 2 - logoWidth / 2 - logoPadding) * (-1), 0);
+    if(logoPosition.indexOf("Right") != -1)
+      logoLayer.translate(Math.round(width / 2 - logoWidth / 2 - logoPadding), 0);
+    if(logoPosition.indexOf("Top") != -1)
+      logoLayer.translate(0, Math.round(height / 2 - logoHeight / 2 - logoPadding) * (-1));
+    if(logoPosition.indexOf("Bottom") != -1)
+      logoLayer.translate(0, Math.round(height / 2 - logoHeight / 2 - logoPadding));  
   }
   
 
-  if(logoPosition.indexOf("Left") != -1)
-    logoLayer.translate(Math.round(width / 2 - logoWidth / 2 - logoPadding) * (-1), 0);
-  if(logoPosition.indexOf("Right") != -1)
-    logoLayer.translate(Math.round(width / 2 - logoWidth / 2 - logoPadding), 0);
-  if(logoPosition.indexOf("Top") != -1)
-    logoLayer.translate(0, Math.round(height / 2 - logoHeight / 2 - logoPadding) * (-1));
-  if(logoPosition.indexOf("Bottom") != -1)
-    logoLayer.translate(0, Math.round(height / 2 - logoHeight / 2 - logoPadding));
-
-  
   if(outputName.indexOf("PNG") != -1 || outputName.indexOf("png") != -1)
     saveDocumentPNG(docRef, outputFolder,  outputName);
   if(outputName.indexOf("JPG") != -1 || outputName.indexOf("jpg") != -1 || outputName.indexOf("jpeg") != -1)
