@@ -144,6 +144,19 @@ function saveDocumentSVG(activeDocument, filePath, fileName, width, height){
   svgProcess(filePath, tempFileName, svgFileName, width, height);
 }
 
+function saveDocumentICO(activeDocument, filePath, fileName)
+{
+  var fPath = filePath + '/' + fileName;
+  var opts, file;
+  opts = new ExportOptionsSaveForWeb();
+  opts.format = SaveDocumentType.PNG;
+  opts.PNG8 = false;
+  opts.quality = 100;
+  
+  var pngFile = new File(fPath);
+  activeDocument.exportDocument(pngFile, ExportType.SAVEFORWEB, opts);
+}
+
 
 function Create(width, height, outputName, logoPosition, logoPadding){
   
@@ -250,6 +263,8 @@ function Create(width, height, outputName, logoPosition, logoPadding){
     saveDocumentPNG(docRef, outputFolder,  outputName);
   if(outputName.indexOf("JPG") != -1 || outputName.indexOf("jpg") != -1 || outputName.indexOf("jpeg") != -1)
     saveDocumentJPG(docRef, outputFolder,  outputName);
+  if(outputName.endsWith("ICO") || outputName.endsWith("ico"))
+  saveDocumentICO(docRef, outputFolder,  outputName);
 
   docRef.close(SaveOptions.DONOTSAVECHANGES);
 }
@@ -356,4 +371,9 @@ function CreateLogo(width, height, outputName, logoPosition, logoPadding, isWhit
 
 function CreateWhiteLogo(width, height, outputName, logoPosition, logoPadding){
   CreateLogo(width, height, outputName, logoPosition, logoPadding, 'white');
+}
+
+
+function CreateIcn(width, height, outputName, logoPosition, logoPadding){
+  Create(width, height, outputName, logoPosition, logoPadding);
 }
